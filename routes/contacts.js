@@ -64,15 +64,67 @@ router.post(
 // @desc        Update contact
 // @route       PUT api/contacts/:id
 // @access      Private
-router.put('/:id', (req, res, next) => {
-    res.send('Update contact');
+router.put('/:id', auth, async (req, res, next) => {
+    const {name, email, phone, type} = req.body;
+
+    // Build contact object
+    const contactFields = {};
+
+    // Check if there are included
+    if(name) contactFields.name = name;
+    if(email) contactFields.email = email;
+    if(phone) contactFields.phone = phone;
+    if(type) contactFields.type = type;
+
+    try {
+        let contact = await Contact.findById(req.params.id);
+
+        if(!contact){
+            return res.status(404).json({success: false, msg: 'Contact not found'});
+        }
+
+        // verify user owns contact
+        if(contact.user.toString() !== req.user.id){
+            return res.status(401).json({success: false, msg: 'Not authorized'});
+        }
+
+        contact = await Contact.findByIdAndUpdate(
+            req.params.id,
+            {$set: contactFields},
+            {new: true}    
+        );
+
+        res.status(201).json({success: true, contact});
+    } catch (err) {
+        console.error(err.message)
+        res.status(500).json('Server Error');
+    }
+    
 });
 
 // @desc        Delete contact
 // @route       DELETE api/contacts/:id
 // @access      Private
-router.delete('/:id', (req, res, next) => {
-    res.send('Delete contact');
+router.delete('/:id', auth, async (req, res, next) => {
+    try {
+        let contact = await Contact.findById(req.params.id);
+
+        if(!contact){
+            return res.status(404).json({success: false, msg: 'Contact not found'});
+        }
+
+        // verify user owns contact
+        if(contact.user.toString() !== req.user.id){
+            return res.status(401).json({success: false, msg: 'Not authorized'});
+        }
+
+        await Contact.findByIdAndRemove(req.params.id);
+
+        res.status(201).json({success: true, msg: 'Contact removed'});
+    } catch (err) {
+        console.error(err.message)
+        res.status(500).json('Server Error');
+    }
 });
 
 module.exports = router;
