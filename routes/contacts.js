@@ -12,9 +12,9 @@ const Contact = require('../models/Contact');
 router.get('/', auth, async (req, res, next) => {
     try {
         // -1 is to bring the most recent by date
-        const contacts = await Contact.find({user: res.user.id}).sort({date: -1});
+        const contacts = await Contact.find({user: req.user.id}).sort({date: -1});
 
-        res.json({success: true, contacts});
+        res.status(200).json({success: true, contacts});
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
