@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('config')
-const {check, validationResult} = require('express-validator')
+const config = require('config');
+const {check, validationResult} = require('express-validator');
 
 const User = require('../models/User');
 
@@ -20,8 +20,9 @@ router.post(
     async (req, res, next) => {
         const errors = validationResult(req);
 
+        // added success field...
         if(!errors.isEmpty()){
-            return res.status(400).json({errors: errors.array()});
+            return res.status(400).json({success: false, errors: errors.array()});
         }
 
         const {name, email, password} = req.body;
@@ -30,7 +31,7 @@ router.post(
             let user = await User.findOne({email});
 
             if(user){
-                res.status(400).json({msg: 'User already exists'});
+                res.status(400).json({success: false, msg: 'User already exists'});
             }
 
             user = new User({
@@ -39,18 +40,23 @@ router.post(
                 password
             });
 
+            // needed to create token
             const salt = await bcrypt.genSalt(10);
 
+            // encript password
             user.password = await bcrypt.hash(password, salt);
 
+            // save user
             await user.save();
 
+            // payload for jwt
             const payload = {
                 user: {
                     id: user.id
                 }
             }
 
+            // Make token & response
             jwt.sign(
                 payload,
                 config.get('jwtSecret'),
@@ -62,7 +68,8 @@ router.post(
                         throw err;
                     }
 
-                    res.json({token});
+                    // added success field...
+                    res.json({success: true, token});
                 }
             );
 
