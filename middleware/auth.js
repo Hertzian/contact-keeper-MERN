@@ -11,8 +11,10 @@ module.exports = function(req, res, next) {
     }
 
     try {
+        // pull out the payload
         const decoded = jwt.verify(token, config.get('jwtSecret'));
 
+        // set the user in payload to req.user to have access inside the route
         req.user = decoded.user;
 
         next();
