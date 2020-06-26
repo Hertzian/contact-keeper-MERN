@@ -8,6 +8,7 @@ import './App.css';
 
 const App =() => {
   return (
+    // contact states wraps all the app have global access to context
     <ContactState>
       <Router>
         <Fragment>
