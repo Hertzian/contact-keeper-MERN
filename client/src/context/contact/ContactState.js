@@ -53,7 +53,6 @@ export const ContactState = props => {
     
     // Delete contact
     const deleteContact = id => {
-
         dispatch({type: DELETE_CONTACT, payload: id});
     }
     
@@ -70,6 +69,10 @@ export const ContactState = props => {
     }
 
     // Update contact
+    const updateContact = contact => {
+        // This set current = payload, the data in contact selected
+        dispatch({type: UPDATE_CONTACT, payload: contact});
+    }
 
     // Filter contacts
 
@@ -83,7 +86,8 @@ export const ContactState = props => {
             addContact,
             deleteContact,
             setCurrent,
-            clearCurrent
+            clearCurrent,
+            updateContact
         }}>
             {props.children}
         </ContactContext.Provider>
