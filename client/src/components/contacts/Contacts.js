@@ -5,13 +5,22 @@ import ContactContext from '../../context/contact/contactContext';
 export const Contacts = () => {
     const contactContext = useContext(ContactContext);
 
-    const {contacts} = contactContext;
+    const {contacts, filtered} = contactContext;
+
+    if(contacts.length === 0){
+        return <h4>Please add a contact</h4>
+    }
 
     return (
         <Fragment>
-            {contacts.map(contact => 
-                <ContactItem key={contact.id} contact={contact}/>
-            )}
+            {filtered !== null // just checks if filtered input is empty to return correct contacts
+                ? 
+                    // Show filtered contacts in ContactItem component
+                    filtered.map(contact => (<ContactItem key={contact.id} contact={contact}/>))
+                : 
+                    // Show contacts in ContactItem component
+                    contacts.map(contact => (<ContactItem key={contact.id} contact={contact}/>))
+            }
         </Fragment>
     )
 }

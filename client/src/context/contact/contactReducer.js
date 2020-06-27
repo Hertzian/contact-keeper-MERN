@@ -47,7 +47,24 @@ export default (state, action) => {
                 // return all contacts except the one in the filter down below
                 current: null
             }
-            
+
+        case FILTER_CONTACTS:
+            return {
+                ...state,
+                // filtered is part of state
+                filtered: state.contacts.filter(contact => {
+                    const regex = new RegExp(`${action.payload}`, 'gi');
+
+                    return contact.name.match(regex) || contact.email.match(regex);
+                })
+            }
+
+        case CLEAR_FILTER:
+            return {
+                ...state,
+                // return all contacts except the one in the filter down below
+                filtered: null
+            }
     
         default:
             return state;
