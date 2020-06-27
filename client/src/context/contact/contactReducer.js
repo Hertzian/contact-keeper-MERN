@@ -19,13 +19,26 @@ export default (state, action) => {
                 // action.payload brings the data from the form
                 contacts: [...state.contacts, action.payload]
             }
-            break;
 
         case DELETE_CONTACT:
             return {
                 ...state,
                 // return all contacts except the one in the filter down below
                 contacts: state.contacts.filter(contact => contact.id !== action.payload)
+            }
+
+        case SET_CURRENT:
+            return {
+                ...state,
+                // return all contacts except the one in the filter down below
+                current: action.payload
+            }
+
+        case CLEAR_CURRENT:
+            return {
+                ...state,
+                // return all contacts except the one in the filter down below
+                current: null
             }
     
         default:

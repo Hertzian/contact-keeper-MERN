@@ -5,13 +5,16 @@ import ContactContext from '../../context/contact/contactContext';
 export const ContactItem = ({contact}) => {
     const contactContext = useContext(ContactContext);
 
-    const {deleteContact} = contactContext;
+    // bring in methods in state
+    const {deleteContact, setCurrent, clearCurrent} = contactContext;
 
+    // Destructuring props
     const {id, name, email, phone, type} = contact;
 
     // id is passed through props
     const onDelete = () => {
         deleteContact(id);
+        clearCurrent();
     }
 
     return (
@@ -38,7 +41,7 @@ export const ContactItem = ({contact}) => {
                 )}
             </ul>
             <p>
-                <button className="btn btn-dark btn-sm">Edit</button>
+                <button className="btn btn-dark btn-sm" onClick={() => setCurrent(contact)}>Edit</button>
                 <button className="btn btn-danger btn-sm" onClick={onDelete}>Delete</button>
             </p>
         </div>
