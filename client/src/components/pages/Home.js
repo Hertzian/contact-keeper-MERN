@@ -2,7 +2,7 @@ import React from 'react';
 import {Contacts} from '../contacts/Contacts';
 import {ContactForm} from '../contacts/ContactForm';
 import {ContactFilter} from '../contacts/ContactFilter';
-import contactContext from '../../context/contact/contactContext';
+// import contactContext from '../../context/contact/contactContext';
 
 export const Home = () => {
     return (
