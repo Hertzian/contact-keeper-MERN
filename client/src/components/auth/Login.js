@@ -38,7 +38,7 @@ export const Login = (props) => {
         e.preventDefault();
         
         if(email === '' || password === ''){
-          setAlert('Please fill in all fields', 'danger');
+            setAlert('Please fill in all fields', 'danger');
         }else{
           login({
             email,
@@ -53,7 +53,7 @@ export const Login = (props) => {
             <form onSubmit={onSubmit}>
                 <div className="form-group">
                     <label htmlFor="email">Email address</label>
-                    <input type="email" name='email' value={email} onChange={onChange}required />
+                    <input type="email" name='email' value={email} onChange={onChange} required />
                 </div>
                 <div className="form-group">
                     <label htmlFor="password">Password</label>

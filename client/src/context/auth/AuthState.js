@@ -63,7 +63,7 @@ export const AuthState = props => {
             dispatch({
                 type: REGISTER_FAIL,
                 payload: err.response.data.msg // this msg comes from the backend
-            })
+            });
         }
     }
 
@@ -88,12 +88,13 @@ export const AuthState = props => {
             dispatch({
                 type: LOGIN_FAIL,
                 payload: err.response.data.msg // this msg comes from the backend
-            })
+            });
         }
     }
 
     // Logout
-    const logout = () => console.log('logout')
+    const logout = () => dispatch({type: LOGOUT});
+        
     
     // Clear errors
     const clearErrors = () => dispatch({type: CLEAR_ERRORS})
