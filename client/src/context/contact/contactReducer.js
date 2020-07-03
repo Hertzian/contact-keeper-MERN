@@ -26,7 +26,7 @@ export default (state, action) => {
                 ...state,
                 // this add data into state, state are inmutable (...state.contacts)
                 // action.payload brings the data from the form
-                contacts: [...state.contacts, action.payload],
+                contacts: [action.payload, ...state.contacts],
                 loading: false
             }
             
@@ -42,7 +42,7 @@ export default (state, action) => {
             return {
                 ...state,
                 // return all contacts except the one in the filter down below
-                contacts: state.contacts.filter(contact => contact.id !== action.payload),
+                contacts: state.contacts.filter(contact => contact._id !== action.payload),
                 loading: false
             }
 

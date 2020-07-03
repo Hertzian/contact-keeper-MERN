@@ -9,11 +9,11 @@ export const ContactItem = ({contact}) => {
     const {deleteContact, setCurrent, clearCurrent} = contactContext;
 
     // Destructuring props
-    const {id, name, email, phone, type} = contact;
+    const {_id, name, email, phone, type} = contact;
 
     // id is passed through props
     const onDelete = () => {
-        deleteContact(id);
+        deleteContact(_id);
         clearCurrent();
     }
 
