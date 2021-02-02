@@ -1,83 +1,84 @@
-const express = require('express');
-const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const config = require('config');
-const {check, validationResult} = require('express-validator');
+const express = require('express')
+const router = express.Router()
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const { check, validationResult } = require('express-validator')
 
-const User = require('../models/User');
+const User = require('../models/User')
 
 // @desc        Register a user
 // @route       POST api/users
 // @access      Public
 router.post(
-    '/',
-    [
-        check('name', 'Please add name').not().isEmpty(),
-        check('email', 'Please include a valid email').isEmail(),
-        check('password', 'Please enter a password with 6 or more characters').isLength({min: 6})
-    ],
-    async (req, res, next) => {
-        const errors = validationResult(req);
+  '/',
+  [
+    check('name', 'Please add name').not().isEmpty(),
+    check('email', 'Please include a valid email').isEmail(),
+    check(
+      'password',
+      'Please enter a password with 6 or more characters'
+    ).isLength({ min: 6 }),
+  ],
+  async (req, res, next) => {
+    const errors = validationResult(req)
 
-        // added success field...
-        if(!errors.isEmpty()){
-            return res.status(400).json({success: false, errors: errors.array()});
-        }
-
-        const {name, email, password} = req.body;
-
-        try {
-            let user = await User.findOne({email});
-
-            if(user){
-                res.status(400).json({success: false, msg: 'User already exists'});
-            }
-
-            user = new User({
-                name,
-                email,
-                password
-            });
-
-            // needed to create token
-            const salt = await bcrypt.genSalt(10);
-
-            // encript password
-            user.password = await bcrypt.hash(password, salt);
-
-            // save user
-            await user.save();
-
-            // payload for jwt
-            const payload = {
-                user: {
-                    id: user.id
-                }
-            }
-
-            // Make token & response
-            jwt.sign(
-                payload,
-                config.get('jwtSecret'),
-                {
-                    expiresIn: 360000
-                },
-                (err, token) => {
-                    if(err) {
-                        throw err;
-                    }
-
-                    // added success field...
-                    res.json({success: true, token});
-                }
-            );
-
-        } catch (err) {
-            console.error(err.message);
-            res.status(500).send('Server Error');
-        }
+    // added success field...
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() })
     }
-);
 
-module.exports = router; 
+    const { name, email, password } = req.body
+
+    try {
+      let user = await User.findOne({ email })
+
+      if (user) {
+        res.status(400).json({ success: false, msg: 'User already exists' })
+      }
+
+      user = new User({
+        name,
+        email,
+        password,
+      })
+
+      // needed to create token
+      const salt = await bcrypt.genSalt(10)
+
+      // encript password
+      user.password = await bcrypt.hash(password, salt)
+
+      // save user
+      await user.save()
+
+      // payload for jwt
+      const payload = {
+        user: {
+          id: user.id,
+        },
+      }
+
+      // Make token & response
+      jwt.sign(
+        payload,
+        process.env.JWT_SECRET,
+        {
+          expiresIn: 360000,
+        },
+        (err, token) => {
+          if (err) {
+            throw err
+          }
+
+          // added success field...
+          res.json({ success: true, token })
+        }
+      )
+    } catch (err) {
+      console.error(err.message)
+      res.status(500).send('Server Error')
+    }
+  }
+)
+
+module.exports = router
